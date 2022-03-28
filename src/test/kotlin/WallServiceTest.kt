@@ -5,15 +5,8 @@ import org.junit.Assert.*
 class WallServiceTest {
 
     @Test
-    fun addIdNotNull() {
-        val service = WallService
-        val result = service.add(Post(text = "первый пост"))
-        assertNotNull(result)
-    }
-
-    @Test
     fun updateSuccessful() {
-        val service = WallService
+        val service = WallService()
         service.add(Post(text = "первый пост"))
         service.add(Post(text = "второй пост"))
         service.add(Post(text = "третий пост"))
@@ -23,12 +16,20 @@ class WallServiceTest {
 
     @Test
     fun updateNotSuccessful() {
-        val service = WallService
+        val service = WallService()
         service.add(Post(text = "первый пост"))
         service.add(Post(text = "второй пост"))
         service.add(Post(text = "третий пост"))
         val result = service.update(Post(id = 4, text = "обновленный пост"))
         assertFalse(result)
+    }
+
+    @Test
+    fun addIdNotNull() {
+        val service = WallService()
+        val post = Post(text = "новый пост")
+        val result = service.add(post)
+        assertNotEquals(result.id, post.id)
     }
 
 }
