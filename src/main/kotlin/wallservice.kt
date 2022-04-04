@@ -1,6 +1,5 @@
-//class WallService {
+object WallService {
 
-class WallService {
     private var posts = emptyArray<Post>()
     private var id = 1
 
@@ -19,13 +18,15 @@ class WallService {
         for ((index, savedPost) in posts.withIndex())
             if (savedPost.id == post.id) {
                 posts[index] = post.copy(
-                    ownerId = savedPost.id,
+                    ownerId = savedPost.ownerId,
                     fromId = savedPost.fromId,
                     createdBy = savedPost.createdBy,
                     text = savedPost.text,
                     replyOwnerId = savedPost.replyOwnerId,
+                    replyPostId = savedPost.replyPostId,
                     friendsOnly = savedPost.friendsOnly,
                     postType = savedPost.postType,
+                    attachments = savedPost.attachments,
                     signerId = savedPost.signerId,
                     canPin = savedPost.canPin,
                     markedAsAds = savedPost.markedAsAds,
@@ -35,6 +36,11 @@ class WallService {
                 answer = true
             }
         return answer
+    }
+
+    fun cleanWallservice() {
+        posts = emptyArray()
+        id = 1
     }
 
 }
