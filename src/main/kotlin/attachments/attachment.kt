@@ -9,12 +9,12 @@ data class AudioAttachment (
 
 data class FileAttachment (
     override val type: String = "file",
-    val audio: File
+    val file: File
 ): Attachment(type)
 
 data class LinkAttachment (
     override val type: String = "link",
-    val video: Link
+    val link: Link
 ): Attachment(type)
 
 data class PhotoAttachment (
