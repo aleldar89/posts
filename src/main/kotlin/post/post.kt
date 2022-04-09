@@ -1,4 +1,4 @@
-package postAndInternals
+package post
 
 import attachments.*
 

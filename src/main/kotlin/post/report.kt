@@ -1,4 +1,4 @@
-package postAndInternals
+package post
 
 data class Report(
     val ownerId: Int = 0,

@@ -1,6 +1,6 @@
 import org.junit.Test
 import org.junit.Assert.*
-import postAndInternals.*
+import post.*
 
 class WallServiceTest {
 
