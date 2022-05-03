@@ -3,16 +3,15 @@ import note.*
 object NoteService {
 
     private var notes: MutableMap<Int, Note> = mutableMapOf()
-    private var noteKey = 1
-    private var commentId = 1
+    private var noteKey = 0
+    private var commentId = 0
 
     fun add(note: Note): Int {
-        if (notes.isEmpty())
+        if (noteKey == 0)
             notes[noteKey] = note
-        else {
+        else
             notes[noteKey + 1] = note
-            noteKey++
-        }
+        noteKey++
         note.noteId = noteKey
         return note.noteId
     }
@@ -41,7 +40,7 @@ object NoteService {
         val note = getById(noteId)
         return if (note == null) null
         else {
-            if (note.noteComments.isEmpty())
+            if (commentId == 0)
                 note.noteComments += noteComment.copy(commentId = commentId)
             else {
                 note.noteComments += noteComment.copy(commentId = commentId + 1)
@@ -98,7 +97,7 @@ object NoteService {
 
     fun cleanNoteService() {
         notes.clear()
-        noteKey = 1
-        commentId = 1
+        noteKey = 0
+        commentId = 0
     }
 }

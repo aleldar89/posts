@@ -1,8 +1,6 @@
 import note.*
 import org.junit.Test
-
 import org.junit.Assert.*
-import post.Post
 
 class NoteServiceTest {
 
@@ -11,13 +9,13 @@ class NoteServiceTest {
     @Test
     fun deleteSuccessful() {
         noteService.add(Note(text = "первая заметка"))
-        val result = noteService.delete(1)
+        val result = noteService.delete(0)
         assertTrue(result)
     }
 
     @Test
     fun deleteNotSuccessful() {
-        val result = noteService.delete(2)
+        val result = noteService.delete(1)
         assertFalse(result)
     }
 
@@ -25,13 +23,13 @@ class NoteServiceTest {
     fun successfulGetById() {
         noteService.cleanNoteService()
         noteService.add(Note(text = "первая заметка"))
-        val result = noteService.getById(1)
+        val result = noteService.getById(0)
         assertNotNull(result)
     }
 
     @Test
     fun notSuccessfulGetById() {
-        val result = noteService.getById(2)
+        val result = noteService.getById(1)
         assertNull(result)
     }
 
@@ -39,13 +37,13 @@ class NoteServiceTest {
     fun editSuccessful() {
         noteService.cleanNoteService()
         noteService.add(Note(text = "первая заметка"))
-        val result = noteService.edit(Note(noteId = 1, text = "изменение заметки"))
+        val result = noteService.edit(Note(noteId = 0, text = "изменение заметки"))
         assertTrue(result)
     }
 
     @Test
     fun editNotSuccessful() {
-        val result = noteService.edit(Note(noteId = 2, text = "изменение заметки"))
+        val result = noteService.edit(Note(noteId = 1, text = "изменение заметки"))
         assertFalse(result)
     }
 
@@ -62,13 +60,13 @@ class NoteServiceTest {
     fun createCommentSuccessful() {
         noteService.cleanNoteService()
         noteService.add(Note(text = "первая заметка"))
-        val result = noteService.createComment(NoteComment(message = "комментарий"), 1)
-        assertEquals(1, result)
+        val result = noteService.createComment(NoteComment(message = "комментарий"), 0)
+        assertEquals(0, result)
     }
 
     @Test
     fun createCommentNotSuccessful() {
-        val result = noteService.createComment(NoteComment(message = "комментарий"), 2)
+        val result = noteService.createComment(NoteComment(message = "комментарий"), 1)
         assertEquals(null, result)
     }
 
@@ -76,20 +74,20 @@ class NoteServiceTest {
     fun deleteCommentSuccessful() {
         noteService.cleanNoteService()
         noteService.add(Note(text = "первая заметка"))
-        noteService.createComment(NoteComment(message = "комментарий"), 1)
-        val result = noteService.deleteComment(1,1)
+        noteService.createComment(NoteComment(message = "комментарий"), 0)
+        val result = noteService.deleteComment(0,0)
         assertTrue(result)
     }
 
     @Test
     fun deleteCommentNotSuccessfulByNoteId() {
-        val result = noteService.deleteComment(2,1)
+        val result = noteService.deleteComment(1,0)
         assertFalse(result)
     }
 
     @Test
     fun deleteCommentNotSuccessfulByCommentId() {
-        val result = noteService.deleteComment(1,2)
+        val result = noteService.deleteComment(0,1)
         assertFalse(result)
     }
 
@@ -97,8 +95,8 @@ class NoteServiceTest {
     fun editCommentSuccessful() {
         noteService.cleanNoteService()
         noteService.add(Note(text = "первая заметка"))
-        noteService.createComment(NoteComment(message = "комментарий"), 1)
-        val result = noteService.editComment(1,1,"изменение комментария")
+        noteService.createComment(NoteComment(message = "комментарий"), 0)
+        val result = noteService.editComment(0,0,"изменение комментария")
         assertTrue(result)
     }
 
@@ -106,8 +104,8 @@ class NoteServiceTest {
     fun editCommentNotSuccessfulByNoteId() {
         noteService.cleanNoteService()
         noteService.add(Note(text = "первая заметка"))
-        noteService.createComment(NoteComment(message = "комментарий"), 1)
-        val result = noteService.editComment(2,1,"изменение комментария")
+        noteService.createComment(NoteComment(message = "комментарий"), 0)
+        val result = noteService.editComment(1,0,"изменение комментария")
         assertFalse(result)
     }
 
@@ -115,8 +113,8 @@ class NoteServiceTest {
     fun editCommentNotSuccessfulByCommentId() {
         noteService.cleanNoteService()
         noteService.add(Note(text = "первая заметка"))
-        noteService.createComment(NoteComment(message = "комментарий"), 1)
-        val result = noteService.editComment(1,2,"изменение комментария")
+        noteService.createComment(NoteComment(message = "комментарий"), 0)
+        val result = noteService.editComment(0,1,"изменение комментария")
         assertFalse(result)
     }
 
@@ -124,33 +122,33 @@ class NoteServiceTest {
     fun getComments() {
         noteService.cleanNoteService()
         noteService.add(Note(text = "первая заметка"))
-        noteService.createComment(NoteComment(message = "первый комментарий"), 1)
-        noteService.createComment(NoteComment(message = "второй комментарий"), 1)
-        noteService.createComment(NoteComment(message = "третий комментарий"), 1)
-        noteService.getComments(1)
+        noteService.createComment(NoteComment(message = "первый комментарий"), 0)
+        noteService.createComment(NoteComment(message = "второй комментарий"), 0)
+        noteService.createComment(NoteComment(message = "третий комментарий"), 0)
+        noteService.getComments(0)
     }
 
     @Test
     fun restoreCommentSuccessful() {
         noteService.cleanNoteService()
         noteService.add(Note(text = "первая заметка"))
-        noteService.createComment(NoteComment(message = "комментарий"), 1)
-        noteService.deleteComment(1,1)
-        val result = noteService.restoreComment(1,1)
+        noteService.createComment(NoteComment(message = "комментарий"), 0)
+        noteService.deleteComment(0,0)
+        val result = noteService.restoreComment(0,0)
         assertTrue(result)
     }
 
     @Test
     fun restoreCommentNotSuccessfulByNoteId() {
-        noteService.deleteComment(1,1)
-        val result = noteService.restoreComment(2,1)
+        noteService.deleteComment(0,0)
+        val result = noteService.restoreComment(1,0)
         assertFalse(result)
     }
 
     @Test
     fun restoreCommentNotSuccessfulByCommentId() {
-        noteService.deleteComment(1,1)
-        val result = noteService.restoreComment(1,2)
+        noteService.deleteComment(0,0)
+        val result = noteService.restoreComment(0,1)
         assertFalse(result)
     }
 
