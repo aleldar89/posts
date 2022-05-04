@@ -15,6 +15,7 @@ object Chatservice {
     private fun Chat.edit() {
         messageCount += 1
         unreadMessageCount += 1
+        readed = false
     }
 
     //высылает сообщение или создает чат, если сообщение первое
