@@ -11,37 +11,18 @@ object Chatservice {
     //отдает чат по id
     private val getChat: (chatId: Int) -> Chat = { chats.values.elementAt(it - 1) }
 
-    //отдает кол-во сообщений в чате
-    private val getMessageCount: (Pair<Int, Int>) -> Int = { chats[it]?.messageCount ?: 0 }
-
     //увеличивает счетчики сообщений в чате на 1 при добавлении сообщения
-    private fun Chat.edit(chat: Chat) {
-        chat.messageCount += 1
-        chat.unreadMessageCount += 1
+    private fun Chat.edit() {
+        messageCount += 1
+        unreadMessageCount += 1
     }
 
     //высылает сообщение или создает чат, если сообщение первое
     fun sendMessage(userId: Int, newMessage: NewMessage) {
-        val key = Pair(userId, newMessage.peerId)
-        if (!chatsSearch(key))
-            chats[key] = Chat(
-                chatId = ++countChats,
-                chatMessages = arrayOf(Message(1, newMessage.text)),
-                messageCount = 1,
-                unreadMessageCount = 1
-            )
-        else {
-            chats[key]?.let { chats[key]?.edit(it) } //здесь все считает нормально
-            val message = Message(getMessageCount(key), newMessage.text)
-            chats[key]?.chatMessages = chats[key]?.chatMessages?.plus(message.copy())!!
+        chats.getOrPut(Pair(userId, newMessage.peerId)) { Chat(chatId = ++countChats) }.let {
+            it.edit()
+            it.chatMessages += Message(it.messageCount, newMessage.text)
         }
-    }
-
-    //удаление чата пользователем
-    //todo дописать удаление чата при удалении последнего сообщения
-    fun deleteChat(firstUserId: Int, secondUserId: Int) {
-        val key = Pair(firstUserId, secondUserId)
-        chats.remove(key) ?: throw NonExistentChat("Указанный чат не существует")
     }
 
     //получение чатов пользователя
@@ -63,6 +44,12 @@ object Chatservice {
             deleteChat(firstUserId, secondUserId)
     }
 
+    //удаление чата пользователем
+    fun deleteChat(firstUserId: Int, secondUserId: Int) {
+        val key = Pair(firstUserId, secondUserId)
+        chats.remove(key) ?: throw NonExistentChat("Указанный чат не существует")
+    }
+
     //Отдает список сообщений из чата со статусом "непрочитано" и "неудалено"
     fun getMessages(chatId: Int, messageId: Int, maxCount: Int): MutableList<Message> {
         val messageList = mutableListOf<Message>()
@@ -71,11 +58,23 @@ object Chatservice {
                 .filter { it.messageId >= messageId && !it.readed && !it.deleted }
                 .subList(0, maxCount)
             messageList.forEach { it.readed = true }
-
+            readChat(chatId)
         } catch (e: RuntimeException) {
             println("Веденные данные некорректны")
         }
         return messageList
+    }
+
+    //Отмечает чат и вложенные сообщения прочитанными
+    private fun Chat.readMessages() {
+        readed = true
+        chatMessages.forEach { it.readed = true }
+    }
+
+    //Поиск чата по chatId и его прочтение
+    private fun readChat (chatId: Int) {
+        val key = chats.keys.toList()[chatId - 1]
+        chats[key]?.readMessages()
     }
 
     fun clearChatservice() {
@@ -83,6 +82,25 @@ object Chatservice {
         countChats = 0
     }
 
+    //отдает кол-во сообщений в чате
+//    private val getMessageCount: (Pair<Int, Int>) -> Int = { chats[it]?.messageCount ?: 0 }
+
 //    private val searchMessages: (Chat) -> Boolean = { it.chatMessages.filter { it.deleted == false }.isEmpty() }
+
+//        fun sendMessage(userId: Int, newMessage: NewMessage) {
+//        val key = Pair(userId, newMessage.peerId)
+//        if (!chatsSearch(key))
+//            chats[key] = Chat(
+//                chatId = ++countChats,
+//                chatMessages = arrayOf(Message(1, newMessage.text)),
+//                messageCount = 1,
+//                unreadMessageCount = 1
+//            )
+//        else {
+//            chats[key]?.let { chats[key]?.edit(it) } //здесь все считает нормально
+//            val message = Message(getMessageCount(key), newMessage.text)
+//            chats[key]?.chatMessages?.plus(message.copy())
+//        }
+//    }
 
 }
