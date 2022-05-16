@@ -1,5 +1,4 @@
 import org.junit.Test
-import org.junit.Assert.*
 import chat.*
 
 class ChatserviceTest {
@@ -8,7 +7,6 @@ class ChatserviceTest {
 
     @Test
     fun sendMessageOrCreateChat() {
-        chatService.clearChatservice()
         chatService.sendMessage(1, NewMessage(2, "hello"))
         chatService.sendMessage(1, NewMessage(2, "how do you do?"))
         chatService.sendMessage(2, NewMessage(3, "hi"))
@@ -41,8 +39,20 @@ class ChatserviceTest {
         chatService.getMessage(1, 1, 4)
     }
 
-    @Test (expected = RuntimeException::class)
-    fun getMessagesShouldThrow() {
+    @Test (expected = NonExistentMessage::class)
+    fun getMessagesShouldThrowIfEmpty() {
+        chatService.clearChatservice()
+        chatService.sendMessage(1, NewMessage(2, "hello"))
+        chatService.sendMessage(1, NewMessage(2, "how do you do?"))
+        chatService.sendMessage(1, NewMessage(2, "my name is anon"))
+        chatService.sendMessage(1, NewMessage(2, "do you hear me?"))
+        chatService.getMessage(1, 1, 4)
+        chatService.getMessage(1, 1, 4)
+    }
+
+    //todo
+    @Test (expected = NonExistentChat::class)
+    fun getMessagesShouldThrowIfWrongChat() {
         chatService.clearChatservice()
         chatService.sendMessage(1, NewMessage(2, "hello"))
         chatService.sendMessage(1, NewMessage(2, "how do you do?"))
@@ -58,14 +68,15 @@ class ChatserviceTest {
         chatService.deleteMessage(1, 2, Message(1))
     }
 
-    @Test (expected = RuntimeException::class)
+    //todo
+    @Test (expected = NonExistentMessage::class)
     fun deleteWrongMessage() {
         chatService.clearChatservice()
         chatService.sendMessage(1, NewMessage(2, "hello"))
         chatService.deleteMessage(1, 2, Message(2))
     }
 
-    @Test (expected = RuntimeException::class)
+    @Test (expected = NonExistentChat::class)
     fun deleteFromWrongChat() {
         chatService.clearChatservice()
         chatService.sendMessage(1, NewMessage(2, "hello"))
