@@ -1,3 +1,6 @@
 package chat
 
-class NonExistentChat (message: String): RuntimeException(message)
+import java.lang.IndexOutOfBoundsException
+
+class NonExistentChat (message: String): IndexOutOfBoundsException(message)
+class NonExistentMessage (message: String): IndexOutOfBoundsException(message)
